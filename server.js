@@ -10,12 +10,12 @@ function start(route, handle) {
 
 		req.addListener("data", function(postDataChunk) {
 			postData += postDataChunk;
-			console.log("Receive POST data chunk '" +
+			console.log("Received POST data chunk '" +
 			postDataChunk + "'.");
-		)	
-		};
+		});
 		
-		req.addListener("end", funtion() {
+		req.addListener("end", function() {
+			console.log("Connection Ended");
 			route(handle, pathname, res, postData);
 		});
 
