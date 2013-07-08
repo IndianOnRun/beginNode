@@ -2,7 +2,7 @@
 var querystring = require("querystring"),
 	fs = require("fs"),
 	formidable = require("formidable"),
-	mem = require("./memory").rememText;
+	memtxt = require("./memory").rememText;
 
 function start(response) {
 	console.log("Request handler 'start' was called.");
@@ -16,19 +16,18 @@ function start(response) {
 
 function upload(response, request) {
 	console.log("Request handler 'upload' was called");
-	var mem = new mem.rememText();
-	var form = new formidable.IncomingForm();
+	var mem = new memtxt();
+	//var form = new formidable.IncomingForm();
 	console.log("about to parse");
-	form.parse(request, function(error, fields) {
-		console.log("parsing done");
-		console.log("Someone saved file called : " + fields['filename']);
-		mem.save( fields );
+	//form.parse(request, function(error, fields) {
+	memtxt.findAll(function(error, docs){
+		response.writeHead(200, {'content-type':'text/html'});
+        	response.write("Received Text. Check log. <br /> " );
+		//response.write("<img src = '/show' />");
+		response.write("%j", docs);
+
+                response.end();
 	});
-        response.writeHead(200, {'content-type':'text/html'});
-        response.write("Received Text. Check log. <br /> " );
-	//response.write("<img src = '/show' />");
-	response.write("%j", mem);
-        response.end();
 }
 
 function show(response, postData) {
