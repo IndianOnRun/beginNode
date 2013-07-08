@@ -5,21 +5,12 @@ var querystring = require("querystring"),
 
 function start(response) {
 	console.log("Request handler 'start' was called.");
-	var body = '<html>'+
-		'<head>'+
-		'<meta http-equiv="Content-Type" content="text/html; '+
-		'charset=UTF-8" />'+
-		'</head>'+
-		'<body>'+
-		'<form action="/upload" enctype="multipart/form-data" method = "post" >'+
-		'<input type = "file" name = "upload" multiple = "multiple">'+
-		'<input type="submit" value="Upload image" />'+
-		'</form>'+
-		'</body>'+
-		'</html>';
-		response.writeHead(200, {'content-type':'text/html'});
-		response.write(body);
-		response.end();
+	fs.readFile('getPost.html', function(err, data) {
+			if (err) throw err;
+			response.writeHead(200, {'content-type':'text/html'});
+			response.write(data);
+			response.end();
+		});
 }
 
 function upload(response, request) {
@@ -27,30 +18,35 @@ function upload(response, request) {
 
 	var form = new formidable.IncomingForm();
 	console.log("about to parse");
-	form.parse(request, function(error, fields, files) {
+	form.parse(request, function(error, fields) {
 		console.log("parsing done");
-		fs.rename(files.upload.path, "./tmp/test.png");
+		console.log("Someone saved file called : " + fields['filename']);
+		var data1 = fields;
 	});
         response.writeHead(200, {'content-type':'text/html'});
-        response.write("Received Image: <br /> " );
-	response.write("<img src = '/show' />");
+        response.write("Received Text. Check log. <br /> " );
+	//response.write("<img src = '/show' />");
+	
         response.end();
 }
 
 function show(response, postData) {
 	console.log("Request handler 'show' was called.");
-	fs.readFile("./tmp/test.png", "binary", function(error, file) {
-		if (error) {
-			response.writeHead(500, {'content-type' : 'text/plain'});
-			response.write(error+ "\n");
-			response.end();
-		} else {
-			response.writeHead(200, {'content-type':'image/png'});
-			response.write(file, "binary");
-			response.end();
-		}
-	});
+	
+
+	//fs.readFile("./tmp/test.png", "binary", function(error, file) {
+	//	if (error) {
+	//		response.writeHead(500, {'content-type' : 'text/plain'});
+	//		response.write(error+ "\n");
+	//		response.end();
+	//	} else {
+	//		response.writeHead(200, {'content-type':'text/plain'});
+	//		response.write("Dict is %j", );
+	//		response.end();
+	//	}
+	//});
 }
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
+
