@@ -18,25 +18,25 @@ rememText.prototype.findById = function(id, callback) {
 	callback(null, result);
 }
 
-rememText.prototype.save = function(text, callback) {
+rememText.prototype.save = function(texts, callback) {
 	var text = null;
-	if(typeof(text.length)=="undefined")
-		text = [text];
+	if(typeof(texts.length)=="undefined")
+		texts = [texts];
 
-	for(var i=0; i<text.length;i++) {
-		text = text[i];
+	for(var i=0; i<texts.length;i++) {
+		text = texts[i];
 		text._id = memTextCount++;
 		text.created_at = new Date();
 
-		this.dummyData[this.dummyData.length] = text;
+		this.dummyData[this.dummyData.length] = texts;
 
 	}
-	callback(null, text);
+	callback(null, texts);
 };
 
 new rememText().save([
 	{body: 'Rohit1'},
 	{body: 'Rohit2'}
-], function(error, text){});
+], function(error, texts){});
 
 exports.rememText = rememText;
