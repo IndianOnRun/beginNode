@@ -67,6 +67,7 @@ HoldText.prototype.save = function(texts, callback) {
 				//text._id = memTextCount++;
 			}	//text.created_at = new Date();
 			text_collection.insert(texts, function() {
+				console.log(texts);
 				callback(null, texts);
 			});	
 			//this.db.close();
