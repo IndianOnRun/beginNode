@@ -27,23 +27,31 @@ function upload(response, request) {
 		holdText.save([{
 			body: cleanText
 		}] ,function(error, docs){
-			response.writeHead(200, {'content-type':'text/plain'});
-			response.write("Thanks");
+			response.writeHead(200, {'content-type':'text/html'});
+			response.write('<html><body><a href = "/list">Thanks</a></body></html>');
 			response.end();
 		});
 
 	});
 };
 
-function list(response) {
-		var holdText = new HoldText();
-		holdText.findAll(function(error, docs){
-			response.writeHead(200, {'content-type':'text/html'});
+function list(response, request) {
+	console.log("Request for 'list' was called.");
+	var holdText = new HoldText();
+	holdText.findAll(function(error, texts){
+		if (error) {
+			 console.log("Bummer");
+		}
+		else {
+			console.log("Into the findall block. Starting now.");
+			response.writeHead(200, {'content-type':'text/plain'});
         		response.write("Received Text. Check log. <br /> " );
-			response.write(JSON.stringify(docs));
+			console.log("Step 1 complete."+ texts);
+			response.write(JSON.stringify(texts));
                 	response.end();
+		}
 	});
-
+	console.log("Stepped out of the block");
 };
 
 function show(response, postData) {

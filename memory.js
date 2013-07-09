@@ -4,8 +4,8 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
-HoldText = function(host, port){
-	this.db = new Db('pastehit', new Server(host, port, {auto_reconnect: true}, {}));
+HoldText = function(){
+	this.db = new Db('pastehit', new Server('localhost', 27017, {auto_reconnect: true}, {}), {safe: false});
 	this.db.open(function(){});
 };
 
@@ -18,50 +18,65 @@ HoldText.prototype.getCollection = function(callback) {
 
 
 HoldText.prototype.findAll = function(callback) {
+	console.log("pre-getCollection");
 	this.getCollection(function(error, text_collection) {
-		if (error) callback(error);
+		if (error) {
+			callback(error);
+			console.log("FLAG 1");
+		}
 		else { 
+			console.log("FLAG 2");
 			text_collection.find().toArray(function(error, results) {
-				if (error) callback(error)
-				else callback(null, results)			
-		
+				if( error ) {
+					callback(error);
+					console.log("FLAG2B");
+				} else {
+					console.log("FLAG3");
+					callback(null, results);			
+					console.log("FLAG4");
+				}
+				console.log("^^^^^^ THIS IS THE PROBLEM");
+				//this.db.close();	
 		 	});
 		}
 	});
 };
 
 HoldText.prototype.findById = function(id, callback) {
-	var result = null;
-	for (var i=0; i<this.dummyData.length;i++) {
-		if (this.dummyData[i]._id == id) {
-			result = this.dummyData[i];
-			break;
+	this.getCollection(function(error, text_collection) {
+		if( error ) callback(error)
+		else {
+			text_collection.findOne({_id: text_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
+				if( error ) callback(error)
+				else callback(null, result)
+			});
 		}
-	}
-	callback(null, result);
+	});
 };
 
+
+
 HoldText.prototype.save = function(texts, callback) {
-	this.getCollection(funtion(error, text_collection) {
+	this.getCollection(function(error, text_collection) {
 		if (error) callback(error)
 		else {
 			if(typeof(texts.length) == 'undefined')
 				texts = [texts];
 			for(var i=0; i<texts.length;i++) {
 				text = texts[i];
-				text._id = memTextCount++;
+				//text._id = memTextCount++;
 			}	//text.created_at = new Date();
+			text_collection.insert(texts, function() {
+				callback(null, texts);
+			});	
+			//this.db.close();
 		}
-		text_collection.insert(texts, function() {
-			callback(null, texts);
-		});
-	
 	});
 };
 
 new HoldText().save([
-	{body: 'Rohit1'},
-	{body: 'Rohit2'}
+	{ body : 'Rohit1' },
+	{ body : 'Rohit2' }
 ], function(error, texts){});
 
 exports.HoldText = HoldText;
