@@ -4,7 +4,8 @@
   "description": "From the NodeBeginner tutorial.",
   "main": "index.js",
   "dependencies": {
-    "formidable": "~1.0.14"
+    "formidable": "~1.0.14",
+    "mongodb":">= 0.9.6-7"
   },
   "devDependencies": {},
   "scripts": {

@@ -1,56 +1,76 @@
 //var exec = require('child_process').exec;
-var querystring = require("querystring"),
+var qs = require("querystring"),
 	fs = require("fs"),
-	formidable = require("formidable");
+	formidable = require("formidable"),
+	HoldText = require("./memory").HoldText;
 
 function start(response) {
 	console.log("Request handler 'start' was called.");
-	var body = '<html>'+
-		'<head>'+
-		'<meta http-equiv="Content-Type" content="text/html; '+
-		'charset=UTF-8" />'+
-		'</head>'+
-		'<body>'+
-		'<form action="/upload" enctype="multipart/form-data" method = "post" >'+
-		'<input type = "file" name = "upload" multiple = "multiple">'+
-		'<input type="submit" value="Upload image" />'+
-		'</form>'+
-		'</body>'+
-		'</html>';
-		response.writeHead(200, {'content-type':'text/html'});
-		response.write(body);
-		response.end();
-}
+	fs.readFile('getPost.html', function(err, data) {
+			if (err) throw err;
+			response.writeHead(200, {'content-type':'text/html'});
+			response.write(data);
+			response.end();
+		});
+};
 
 function upload(response, request) {
 	console.log("Request handler 'upload' was called");
-
-	var form = new formidable.IncomingForm();
-	console.log("about to parse");
-	form.parse(request, function(error, fields, files) {
-		console.log("parsing done");
-		fs.rename(files.upload.path, "./tmp/test.png");
+	var holdText = new HoldText();
+	var wallotext = '';
+	request.on("data", function(data) {
+		wallotext += data;
 	});
-        response.writeHead(200, {'content-type':'text/html'});
-        response.write("Received Image: <br /> " );
-	response.write("<img src = '/show' />");
-        response.end();
-}
+	request.on("end", function() {
+		cleanText =  qs.parse(wallotext).snippet;
+		console.log("RECEIVED : "+ cleanText);
+		holdText.save([{
+			body: cleanText
+		}] ,function(error, docs){
+			response.writeHead(200, {'content-type':'text/html'});
+			response.write('<html><body><a href = "/list">Thanks</a></body></html>');
+			response.end();
+		});
+
+	});
+};
+
+function list(response, request) {
+	console.log("Request for 'list' was called.");
+	var holdText = new HoldText();
+	holdText.findAll(function(error, texts){
+		if (error) {
+			 console.log("Bummer");
+		}
+		else {
+			console.log("Into the findall block. Starting now.");
+			response.writeHead(200, {'content-type':'text/plain'});
+        		response.write("Received Text. Check log. <br /> " );
+			console.log("Step 1 complete."+ texts);
+			response.write(JSON.stringify(texts));
+                	response.end();
+		}
+	});
+	console.log("Stepped out of the block");
+};
 
 function show(response, postData) {
 	console.log("Request handler 'show' was called.");
-	fs.readFile("./tmp/test.png", "binary", function(error, file) {
-		if (error) {
-			response.writeHead(500, {'content-type' : 'text/plain'});
-			response.write(error+ "\n");
-			response.end();
-		} else {
-			response.writeHead(200, {'content-type':'image/png'});
-			response.write(file, "binary");
-			response.end();
-		}
-	});
+	
+
+	//fs.readFile("./tmp/test.png", "binary", function(error, file) {
+	//	if (error) {
+	//		response.writeHead(500, {'content-type' : 'text/plain'});
+	//		response.write(error+ "\n");
+	//		response.end();
+	//	} else {
+	//		response.writeHead(200, {'content-type':'text/plain'});
+	//		response.write("Dict is %j", );
+	//		response.end();
+	//	}
+	//});
 }
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
+exports.list = list;
