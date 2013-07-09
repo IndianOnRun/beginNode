@@ -1,10 +1,33 @@
-var memTextCount = 1;
+var Db = require('mongodb').Db;
+var Connection = require('mongodb').Connection;
+var Server = require('mongodb').Server;
+var BSON = require('mongodb').BSON;
+var ObjectID = require('mongodb').ObjectID;
 
-HoldText = function(){};
-HoldText.prototype.dummyData = [];
+HoldText = function(host, port){
+	this.db = new Db('pastehit', new Server(host, port, {auto_reconnect: true}, {}));
+	this.db.open(function(){});
+};
+
+HoldText.prototype.getCollection = function(callback) {
+	this.db.collection('texts', function(error, text_collection) {
+		if (error) callback(error);
+		else callback(null, text_collection);
+	});
+};
+
 
 HoldText.prototype.findAll = function(callback) {
-	callback(null, this.dummyData)
+	this.getCollection(function(error, text_collection) {
+		if (error) callback(error);
+		else { 
+			text_collection.find().toArray(function(error, results) {
+				if (error) callback(error)
+				else callback(null, results)			
+		
+		 	});
+		}
+	});
 };
 
 HoldText.prototype.findById = function(id, callback) {
@@ -19,20 +42,21 @@ HoldText.prototype.findById = function(id, callback) {
 };
 
 HoldText.prototype.save = function(texts, callback) {
-	var text = null;
-	//empty list returns back whatever we have
-	if(typeof(texts.length)=="undefined")
-		texts = [texts];
-	//saves the texts one by one
-	for(var i=0; i<texts.length;i++) {
-		text = texts[i];
-		text._id = memTextCount++;
-		//text.created_at = new Date();
-		
-		this.dummyData[this.dummyData.length] = text;
-
-	}
-	callback(null, texts);
+	this.getCollection(funtion(error, text_collection) {
+		if (error) callback(error)
+		else {
+			if(typeof(texts.length) == 'undefined')
+				texts = [texts];
+			for(var i=0; i<texts.length;i++) {
+				text = texts[i];
+				text._id = memTextCount++;
+			}	//text.created_at = new Date();
+		}
+		text_collection.insert(texts, function() {
+			callback(null, texts);
+		});
+	
+	});
 };
 
 new HoldText().save([
