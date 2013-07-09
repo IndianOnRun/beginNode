@@ -1,13 +1,13 @@
 var memTextCount = 1;
 
-rememText = function(){}
-rememText.prototype.dummyData = [];
+HoldText = function(){};
+HoldText.prototype.dummyData = [];
 
-rememText.prototype.findAll = function(callback) {
+HoldText.prototype.findAll = function(callback) {
 	callback(null, this.dummyData)
-}
+};
 
-rememText.prototype.findById = function(id, callback) {
+HoldText.prototype.findById = function(id, callback) {
 	var result = null;
 	for (var i=0; i<this.dummyData.length;i++) {
 		if (this.dummyData[i]._id == id) {
@@ -16,27 +16,28 @@ rememText.prototype.findById = function(id, callback) {
 		}
 	}
 	callback(null, result);
-}
+};
 
-rememText.prototype.save = function(texts, callback) {
+HoldText.prototype.save = function(texts, callback) {
 	var text = null;
+	//empty list returns back whatever we have
 	if(typeof(texts.length)=="undefined")
 		texts = [texts];
-
+	//saves the texts one by one
 	for(var i=0; i<texts.length;i++) {
 		text = texts[i];
 		text._id = memTextCount++;
-		text.created_at = new Date();
-
-		this.dummyData[this.dummyData.length] = texts;
+		//text.created_at = new Date();
+		
+		this.dummyData[this.dummyData.length] = text;
 
 	}
 	callback(null, texts);
 };
 
-new rememText().save([
+new HoldText().save([
 	{body: 'Rohit1'},
 	{body: 'Rohit2'}
 ], function(error, texts){});
 
-exports.rememText = rememText;
+exports.HoldText = HoldText;

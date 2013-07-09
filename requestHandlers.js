@@ -1,8 +1,8 @@
 //var exec = require('child_process').exec;
-var querystring = require("querystring"),
+var qs = require("querystring"),
 	fs = require("fs"),
 	formidable = require("formidable"),
-	memtxt = require("./memory").rememText;
+	HoldText = require("./memory").HoldText;
 
 function start(response) {
 	console.log("Request handler 'start' was called.");
@@ -12,23 +12,39 @@ function start(response) {
 			response.write(data);
 			response.end();
 		});
-}
+};
 
 function upload(response, request) {
 	console.log("Request handler 'upload' was called");
-	var mem = new memtxt();
-	//var form = new formidable.IncomingForm();
-	console.log("about to parse");
-	//form.parse(request, function(error, fields) {
-	memtxt.findAll(function(error, docs){
-		response.writeHead(200, {'content-type':'text/html'});
-        	response.write("Received Text. Check log. <br /> " );
-		//response.write("<img src = '/show' />");
-		response.write("%j", docs);
-
-                response.end();
+	var holdText = new HoldText();
+	var wallotext = '';
+	request.on("data", function(data) {
+		wallotext += data;
 	});
-}
+	request.on("end", function() {
+		cleanText =  qs.parse(wallotext).snippet;
+		console.log("RECEIVED : "+ cleanText);
+		holdText.save([{
+			body: cleanText
+		}] ,function(error, docs){
+			response.writeHead(200, {'content-type':'text/plain'});
+			response.write("Thanks");
+			response.end();
+		});
+
+	});
+};
+
+function list(response) {
+		var holdText = new HoldText();
+		holdText.findAll(function(error, docs){
+			response.writeHead(200, {'content-type':'text/html'});
+        		response.write("Received Text. Check log. <br /> " );
+			response.write(JSON.stringify(docs));
+                	response.end();
+	});
+
+};
 
 function show(response, postData) {
 	console.log("Request handler 'show' was called.");
@@ -49,4 +65,4 @@ function show(response, postData) {
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
-
+exports.list = list;
