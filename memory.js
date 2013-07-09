@@ -3,7 +3,29 @@ var Connection = require('mongodb').Connection;
 var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
+var MongoClient = require('mongodb').MongoClient;
 
+var roger = {};
+
+var rohit = function(docs) {
+	roger = docs;
+};
+
+
+var conn = MongoClient.connect('mongodb://localhost:27017/rewrite', function(err, db) {
+	if(err) throw err;
+	rohit();	
+	var collection = db.collection('rw1');
+	collection.insert(roger, function(err, docs) {
+		collection.find().toArray(function(err,results) {
+			console.dir(results);
+			db.close();
+		});
+	});
+})
+
+
+/*
 HoldText = function(){
 	this.db = new Db('pastehit', new Server('localhost', 27017, {auto_reconnect: true}, {}), {safe: false});
 	this.db.open(function(){});
@@ -80,4 +102,4 @@ new HoldText().save([
 	{ body : 'Rohit2' }
 ], function(error, texts){});
 
-exports.HoldText = HoldText;
+exports.HoldText = HoldText;*/ 
