@@ -6,19 +6,6 @@ var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
 
 
-/*var conn = MongoClient.connect('mongodb://localhost:27017/rewrite', function(err, db) {
-	if(err) throw err;
-	var collection = db.collection('rw1');
-	collection.insert(roger, function(err, docs) {
-		collection.find().toArray(function(err,results) {
-			console.dir(results);
-			db.close();
-		});
-	});
-})*/
-
-// 'localhost', 27017
-
 HoldText = function(host1, port1){
 	this.db = new Db("pastehit", new Server(host1, port1, {auto_reconnect: true}, {}), {safe: false});
 	this.db.open(function(){});
@@ -33,24 +20,17 @@ HoldText.prototype.getCollection = function(callback) {
 
 
 HoldText.prototype.findAll = function(callback) {
-	console.log("pre-getCollection");
 	this.getCollection(function(error, text_collection) {
 		if (error) {
 			callback(error);
-			console.log("FLAG 1");
 		}
 		else { 
-			console.log("FLAG 2");
-			text_collection.find().toArray(function(error, results) {
+			text_collection.find( { } , { _id: 0 } ).toArray(function(error, results) {
 				if( error ) {
 					callback(error);
-					console.log("FLAG2B");
 				} else {
-					console.log("FLAG3");
 					callback(null, results);			
-					console.log("FLAG4");
 				}
-				console.log("^^^^^^ THIS IS THE PROBLEM");
 				//this.db.close();	
 		 	});
 		}
@@ -89,10 +69,5 @@ HoldText.prototype.save = function(texts, callback) {
 		}
 	});
 };
-
-new HoldText('localhost', 27017).save([
-	{ body : 'Rohit1' },
-	{ body : 'Rohit2' }
-], function(error, texts){});
 
 exports.HoldText = HoldText; 

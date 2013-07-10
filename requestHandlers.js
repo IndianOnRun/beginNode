@@ -2,7 +2,8 @@
 var qs = require("querystring"),
 	fs = require("fs"),
 	formidable = require("formidable"),
-	HoldText = require("./memory").HoldText;
+	HoldText = require("./memory").HoldText,
+	randomKey = require("./randomGen").randKey;
 
 var holdText = new HoldText('localhost', 27017);
 
@@ -28,7 +29,8 @@ function upload(response, request) {
 		cleanText =  qs.parse(wallotext).snippet;
 		console.log("RECEIVED : "+ cleanText);
 		holdText.save([{
-			body: cleanText
+			body: cleanText,
+			key: randomKey()
 		}] ,function(error, docs){
 			response.writeHead(200, {'content-type':'text/html'});
 			response.write('<html><body><a href = "/list">Thanks</a></body></html>');
