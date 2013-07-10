@@ -5,9 +5,9 @@ var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
 
-var conn = MongoClient.connect('mongodb://localhost:27017/rewrite', function(err, db) {
+
+/*var conn = MongoClient.connect('mongodb://localhost:27017/rewrite', function(err, db) {
 	if(err) throw err;
-	rohit();	
 	var collection = db.collection('rw1');
 	collection.insert(roger, function(err, docs) {
 		collection.find().toArray(function(err,results) {
@@ -15,17 +15,17 @@ var conn = MongoClient.connect('mongodb://localhost:27017/rewrite', function(err
 			db.close();
 		});
 	});
-})
+})*/
 
+// 'localhost', 27017
 
-/*
-HoldText = function(){
-	this.db = new Db('pastehit', new Server('localhost', 27017, {auto_reconnect: true}, {}), {safe: false});
+HoldText = function(host1, port1){
+	this.db = new Db("pastehit", new Server(host1, port1, {auto_reconnect: true}, {}), {safe: false});
 	this.db.open(function(){});
 };
 
 HoldText.prototype.getCollection = function(callback) {
-	this.db.collection('texts', function(error, text_collection) {
+	this.db.collection("texts", function(error, text_collection) {
 		if (error) callback(error);
 		else callback(null, text_collection);
 	});
@@ -90,9 +90,9 @@ HoldText.prototype.save = function(texts, callback) {
 	});
 };
 
-new HoldText().save([
+new HoldText('localhost', 27017).save([
 	{ body : 'Rohit1' },
 	{ body : 'Rohit2' }
 ], function(error, texts){});
 
-exports.HoldText = HoldText;*/ 
+exports.HoldText = HoldText; 

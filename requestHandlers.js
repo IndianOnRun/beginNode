@@ -4,6 +4,9 @@ var qs = require("querystring"),
 	formidable = require("formidable"),
 	HoldText = require("./memory").HoldText;
 
+var holdText = new HoldText('localhost', 27017);
+
+
 function start(response) {
 	console.log("Request handler 'start' was called.");
 	fs.readFile('getPost.html', function(err, data) {
@@ -16,7 +19,7 @@ function start(response) {
 
 function upload(response, request) {
 	console.log("Request handler 'upload' was called");
-	var holdText = new HoldText();
+	//var holdText = new HoldText('localhost', 27017);
 	var wallotext = '';
 	request.on("data", function(data) {
 		wallotext += data;
@@ -37,17 +40,17 @@ function upload(response, request) {
 
 function list(response, request) {
 	console.log("Request for 'list' was called.");
-	var holdText = new HoldText();
+	//var holdText = new HoldText('localhost', 27017);
 	holdText.findAll(function(error, texts){
 		if (error) {
 			 console.log("Bummer");
 		}
 		else {
 			console.log("Into the findall block. Starting now.");
-			response.writeHead(200, {'content-type':'text/plain'});
-        		response.write("Received Text. Check log. <br /> " );
+			response.writeHead(200, {'content-type':'text/html'});
+        		//response.write("Received Text. Check log. <br /> " );
 			console.log("Step 1 complete."+ texts);
-			response.write(JSON.stringify(texts));
+			response.write("<html><body><a href = '/'>Gotcha</a><br />These are all the entries : "+ JSON.stringify(texts)+"</body></html>" );
                 	response.end();
 		}
 	});
