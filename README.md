@@ -1,6 +1,8 @@
 #Installation Instructions
 ==========================
 
+## Image Loader from the Tutorial
+
 1. Clone repo.
 2. Install Node JS and NPM (Node Package Manager)
 
