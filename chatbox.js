@@ -1,8 +1,8 @@
 //<![CDATA[
-//window.onload = function() {
+window.onload = function() {
 
   var messages = [];
-  var socket = io.connect('http://152.7.99.43:8888');
+  var socket = io.connect('http://152.46.18.98:8888');
   var chatmsg = document.getElementById("chatmsg");
   var sendButton = document.getElementById("send");
   var content = document.getElementById("content");
@@ -26,6 +26,6 @@
     socket.emit('send', { message: text });
   };
 
-//};
+};
 
 //]]>
