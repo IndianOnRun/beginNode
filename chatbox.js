@@ -2,7 +2,7 @@
 window.onload = function() {
 
   var messages = [];
-  var socket = io.connect('http://152.46.18.98:8888');
+  var socket = io.connect('http://152.46.19.229:8888');
   var username = document.getElementById("username");
   var chatmsg = document.getElementById("chatmsg");
   var sendButton = document.getElementById("send");
@@ -14,7 +14,7 @@ window.onload = function() {
       messages.push(data.message);
       var html = '';
       for(var i=0; i<messages.length; i++) {
-        html += '<p>' +messages[i] + '</p>';
+        html = '<p>' +messages[i] + '</p>'+html;
       }
       content.innerHTML  = html;
     } else {
