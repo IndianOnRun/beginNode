@@ -14,7 +14,7 @@ function handler (req, res) {
         return res.end('Error loading the Page. Contact the site admin.');
       }
       res.writeHead(200);//, {'Content-Type':'text/html'});
-      user_ip = req.connection._peername.address;
+      //user_ip = req.connection._peername.address;
       console.log(user_ip);
       res.end(data);
     });

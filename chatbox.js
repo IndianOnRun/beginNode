@@ -14,7 +14,7 @@ window.onload = function() {
       messages.push(data.message);
       var html = '';
       for(var i=0; i<messages.length; i++) {
-        html += '<p>' +messages[i] + '</p> <br />';
+        html += '<p>' +messages[i] + '</p>';
       }
       content.innerHTML  = html;
     } else {
