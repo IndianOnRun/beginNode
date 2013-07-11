@@ -15,8 +15,8 @@ function handler (req, res) {
       res.writeHead(200);//, {'Content-Type':'text/html'});
       res.end(data);
     });
-  } else if (pathname === '/public/chatbox.js') {
-      fs.readFile('/chatbox.js', function(err, data) {
+  } else if (pathname === '/chatbox.js') {
+      fs.readFile('./chatbox.js', function(err, data) {
         if (err) throw (err);
         res.writeHead(200);
         res.end(data);

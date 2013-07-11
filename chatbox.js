@@ -3,6 +3,7 @@ window.onload = function() {
 
   var messages = [];
   var socket = io.connect('http://152.46.18.98:8888');
+  var username = document.getElementById("username");
   var chatmsg = document.getElementById("chatmsg");
   var sendButton = document.getElementById("send");
   var content = document.getElementById("content");
@@ -23,9 +24,8 @@ window.onload = function() {
 
   sendButton.onclick = function() {
     var text = chatmsg.value;
-    socket.emit('send', { message: text });
+    var usr = username.value;
+    socket.emit('send', { message: usr + ": " + text });
   };
-
 };
-
 //]]>
